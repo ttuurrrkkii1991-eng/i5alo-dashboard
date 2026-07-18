@@ -79,9 +79,9 @@ export async function GET(request: Request) {
             .map((c: any) => ({ id: c.id, name: c.name }));
 
         return NextResponse.json({
-            user: botUser,
-            guild: { id: guilds[0].id, name: guilds[0].name, icon: guilds[0].icon },
-            allGuilds: guilds,
+            user: session.user,
+            guild: selectedGuild,
+            allGuilds: validGuilds,
             roles: formattedRoles,
             categories,
             textChannels
