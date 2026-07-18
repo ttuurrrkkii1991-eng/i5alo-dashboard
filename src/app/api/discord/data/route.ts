@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 const DISCORD_API = 'https://discord.com/api/v10';
 const BOT_TOKEN = process.env.DISCORD_TOKEN;
