@@ -36,9 +36,7 @@ export async function GET(request: Request) {
         const botGuildIds = new Set(botGuilds.map((g: any) => g.id));
         
         const validGuilds = userGuilds.filter((g: any) => {
-            const perms = BigInt(g.permissions || 0);
-            const isAdmin = (perms & 8n) === 8n || g.owner; // 8n is ADMINISTRATOR
-            return isAdmin && botGuildIds.has(g.id);
+            return botGuildIds.has(g.id);
         });
 
         if (validGuilds.length === 0) {
