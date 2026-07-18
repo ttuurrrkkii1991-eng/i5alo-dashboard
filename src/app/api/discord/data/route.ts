@@ -83,11 +83,16 @@ export async function GET(request: Request) {
             allGuilds: validGuilds,
             roles: formattedRoles,
             categories,
-            textChannels
+            textChannels,
+            debug: { userGuildsCount: userGuilds.length, botGuildsCount: botGuilds.length }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
-        return NextResponse.json({ error: 'Failed to fetch data from Discord' }, { status: 500 });
+        return NextResponse.json({ 
+            error: 'Failed to fetch data from Discord', 
+            details: error.message,
+            stack: error.stack
+        }, { status: 500 });
     }
 }
