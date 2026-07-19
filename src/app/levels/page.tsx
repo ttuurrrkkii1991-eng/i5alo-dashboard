@@ -41,6 +41,57 @@ export default function LevelsPage() {
     const [globalEnabled, setGlobalEnabled] = useState(true);
     const [textPoints, setTextPoints] = useState(15);
     const [imagePoints, setImagePoints] = useState(25);
+    const [cooldown, setCooldown] = useState(15);
+    const [guildId, setGuildId] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+
+    React.useEffect(() => {
+        fetch('/api/discord/data')
+            .then(res => res.json())
+            .then(data => {
+                if (data.guild) {
+                    setGuildId(data.guild.id);
+                    return fetch(`/api/settings/levels?guildId=${data.guild.id}`);
+                }
+                throw new Error('No guild');
+            })
+            .then(res => res.json())
+            .then(settings => {
+                if (!settings.error) {
+                    setGlobalEnabled(settings.enabled ?? true);
+                    setTextPoints(settings.textPoints ?? 15);
+                    setImagePoints(settings.imagePoints ?? 25);
+                    setCooldown(settings.cooldown ?? 15);
+                }
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    const handleSave = async () => {
+        if (!guildId) return;
+        setSaving(true);
+        try {
+            await fetch('/api/settings/levels', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guildId,
+                    enabled: globalEnabled,
+                    textPoints,
+                    imagePoints,
+                    cooldown
+                })
+            });
+            // Show success (optional: toast notification)
+        } catch (error) {
+            console.error('Failed to save', error);
+        }
+        setSaving(false);
+    };
+
+    if (loading) return <div className="text-white text-center mt-10">جاري التحميل...</div>;
 
     return (
         <div className="max-w-5xl mx-auto pt-6 space-y-6">
@@ -107,19 +158,27 @@ export default function LevelsPage() {
                         title="فترة الانتظار (Cooldown)"
                         description="الوقت بالثواني الذي يجب أن ينتظره العضو بين كل رسالة للحصول على نقاط (لمنع السبام)."
                     >
-                        <select className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-[#3498db]/50 transition-colors">
-                            <option value="15">15 ثانية (موصى به)</option>
-                            <option value="30">30 ثانية</option>
-                            <option value="60">دقيقة واحدة</option>
-                            <option value="0">بدون انتظار (غير موصى به)</option>
+                        <select 
+                            value={cooldown}
+                            onChange={(e) => setCooldown(Number(e.target.value))}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-[#3498db]/50 transition-colors"
+                        >
+                            <option value="15" className="bg-[#1e1f22] text-white">15 ثانية (موصى به)</option>
+                            <option value="30" className="bg-[#1e1f22] text-white">30 ثانية</option>
+                            <option value="60" className="bg-[#1e1f22] text-white">دقيقة واحدة</option>
+                            <option value="0" className="bg-[#1e1f22] text-white">بدون انتظار (غير موصى به)</option>
                         </select>
                     </SettingCard>
 
                     {/* Action */}
-                    <div className="flex items-end justify-end p-6">
-                        <button className="bg-[#3498db] hover:bg-[#2980b9] text-white px-8 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(52,152,219,0.3)] hover:shadow-[0_0_25px_rgba(52,152,219,0.5)] flex items-center gap-2">
+                    <div className="md:col-span-2 flex justify-start p-2">
+                        <button 
+                            onClick={handleSave}
+                            disabled={saving}
+                            className="bg-[#3498db] hover:bg-[#2980b9] text-white px-8 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(52,152,219,0.3)] hover:shadow-[0_0_25px_rgba(52,152,219,0.5)] flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             <Save className="w-5 h-5" />
-                            حفظ الإعدادات
+                            {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
                         </button>
                     </div>
 
