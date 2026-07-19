@@ -25,10 +25,6 @@ export default function StatisticsPage() {
             {/* Page Header */}
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
                 <div className="flex items-center gap-3">
-                    <span className="bg-gradient-to-r from-amber-200 to-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                        <Crown className="w-3 h-3" />
-                        باقة البريميوم
-                    </span>
                     <div 
                         className={clsx(
                             "w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out",

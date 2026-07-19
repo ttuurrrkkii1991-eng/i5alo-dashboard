@@ -15,18 +15,20 @@ const SettingCard = ({ title, description, children }) => (
 );
 
 export default function TicketsPage() {
+    const [guildId, setGuildId] = useState<string | null>(null);
     const [categories, setCategories] = useState([]);
     const [textChannels, setTextChannels] = useState([]);
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     
     // Settings state
     const [selectedChannel, setSelectedChannel] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     
     // Ticket Types state
-    const [ticketTypes, setTicketTypes] = useState([
-        { id: 1, name: "دعم فني", emoji: "🎫", roles: [] }
+    const [ticketTypes, setTicketTypes] = useState<any[]>([
+        { id: Date.now(), name: "دعم فني", emoji: "🎫", roles: [] }
     ]);
 
     useEffect(() => {
@@ -36,13 +38,55 @@ export default function TicketsPage() {
                 if (data.categories) setCategories(data.categories);
                 if (data.textChannels) setTextChannels(data.textChannels);
                 if (data.roles) setRoles(data.roles);
+                if (data.guild) setGuildId(data.guild.id);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!guildId) return;
+        setLoading(true);
+        fetch(`/api/settings/tickets?guildId=${guildId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.settings) {
+                    if (data.settings.channelId) setSelectedChannel(data.settings.channelId);
+                    if (data.settings.categoryId) setSelectedCategory(data.settings.categoryId);
+                    if (data.settings.ticketTypes && data.settings.ticketTypes.length > 0) {
+                        setTicketTypes(data.settings.ticketTypes);
+                    }
+                }
                 setLoading(false);
             })
             .catch(err => {
                 console.error(err);
                 setLoading(false);
             });
-    }, []);
+    }, [guildId]);
+
+    const saveSettings = async () => {
+        if (!guildId) return;
+        setSaving(true);
+        try {
+            await fetch('/api/settings/tickets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guildId,
+                    channelId: selectedChannel,
+                    categoryId: selectedCategory,
+                    ticketTypes
+                })
+            });
+            alert('تم حفظ الإعدادات وإرسال رسالة التذاكر بنجاح! 🚀');
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ أثناء الحفظ.');
+        }
+        setSaving(false);
+    };
 
     const addTicketType = () => {
         setTicketTypes([
@@ -51,25 +95,25 @@ export default function TicketsPage() {
         ]);
     };
 
-    const removeTicketType = (id) => {
+    const removeTicketType = (id: any) => {
         if (ticketTypes.length > 1) {
             setTicketTypes(ticketTypes.filter(t => t.id !== id));
         }
     };
 
-    const updateTicketType = (id, field, value) => {
+    const updateTicketType = (id: any, field: string, value: any) => {
         setTicketTypes(ticketTypes.map(t => 
             t.id === id ? { ...t, [field]: value } : t
         ));
     };
 
-    const toggleRoleForType = (typeId, roleId) => {
+    const toggleRoleForType = (typeId: any, roleId: string) => {
         setTicketTypes(ticketTypes.map(t => {
             if (t.id === typeId) {
                 const hasRole = t.roles.includes(roleId);
                 return {
                     ...t,
-                    roles: hasRole ? t.roles.filter(id => id !== roleId) : [...t.roles, roleId]
+                    roles: hasRole ? t.roles.filter((id: string) => id !== roleId) : [...t.roles, roleId]
                 };
             }
             return t;
@@ -77,7 +121,7 @@ export default function TicketsPage() {
     };
 
     return (
-        <div className="space-y-6 max-w-6xl mx-auto pt-6 pb-20">
+        <div className="space-y-6 max-w-6xl mx-auto pt-6 pb-20" dir="rtl">
             
             {/* Header */}
             <div className="glass-panel p-8 bg-gradient-to-br from-[#f1c40f]/10 to-transparent border-[#f1c40f]/20 flex items-center justify-between">
@@ -86,7 +130,7 @@ export default function TicketsPage() {
                         <MessageSquare className="w-6 h-6" />
                         نظام التذاكر (Tickets)
                     </h2>
-                    <p className="text-gray-300 max-w-2xl">
+                    <p className="text-gray-300 max-w-2xl text-sm">
                         قم بإنشاء أنظمة تذاكر احترافية لتقديم الدعم الفني لأعضاء سيرفرك بسهولة. يمكنك إنشاء أقسام متعددة وتحديد من يمكنه رؤية التذاكر.
                     </p>
                 </div>
@@ -102,15 +146,15 @@ export default function TicketsPage() {
                     <div className="flex items-center gap-3 bg-black/20 border border-white/10 rounded-lg p-3">
                         <Hash className="w-5 h-5 text-gray-400" />
                         <select 
-                            className="w-full bg-transparent text-white outline-none cursor-pointer"
+                            className="w-full bg-[#1e1f22] text-white outline-none cursor-pointer p-2 rounded"
                             disabled={loading}
                             value={selectedChannel}
                             onChange={(e) => setSelectedChannel(e.target.value)}
                             dir="rtl"
                         >
-                            <option value="">{loading ? "جاري التحميل..." : "اختر الروم الكتابي..."}</option>
+                            <option value="" className="bg-[#1e1f22] text-white">{loading ? "جاري التحميل..." : "اختر الروم الكتابي..."}</option>
                             {textChannels.map((c: any) => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
+                                <option key={c.id} value={c.id} className="bg-[#1e1f22] text-white">{c.name}</option>
                             ))}
                         </select>
                     </div>
@@ -122,15 +166,15 @@ export default function TicketsPage() {
                     description="الفئة (Category) التي سيتم إنشاء الرومات الخاصة بالتذاكر بداخلها."
                 >
                     <select 
-                        className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-[#f1c40f]/50 transition-colors"
+                        className="w-full bg-[#1e1f22] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-[#f1c40f]/50 transition-colors"
                         disabled={loading}
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         dir="rtl"
                     >
-                        <option value="">{loading ? "جاري التحميل..." : "اختر الفئة (Category)..."}</option>
+                        <option value="" className="bg-[#1e1f22] text-white">{loading ? "جاري التحميل..." : "اختر الفئة (Category)..."}</option>
                         {categories.map((c: any) => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
+                            <option key={c.id} value={c.id} className="bg-[#1e1f22] text-white">{c.name}</option>
                         ))}
                     </select>
                 </SettingCard>
@@ -219,9 +263,13 @@ export default function TicketsPage() {
 
             {/* Action */}
             <div className="flex justify-end pt-4">
-                <button className="bg-[#f1c40f] hover:bg-[#d4ac0d] text-black px-8 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(241,196,15,0.3)] hover:shadow-[0_0_25px_rgba(241,196,15,0.5)] flex items-center gap-2">
-                    <Save className="w-5 h-5" />
-                    حفظ وإرسال بانل التذاكر
+                <button 
+                    onClick={saveSettings}
+                    disabled={saving}
+                    className="bg-[#f1c40f] hover:bg-[#d4ac0d] text-black px-8 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(241,196,15,0.3)] hover:shadow-[0_0_25px_rgba(241,196,15,0.5)] flex items-center gap-2 disabled:opacity-50"
+                >
+                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    {saving ? "جاري الحفظ..." : "حفظ وإرسال بانل التذاكر"}
                 </button>
             </div>
 

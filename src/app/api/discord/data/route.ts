@@ -33,13 +33,14 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Failed to fetch guilds' }, { status: 500 });
         }
 
-        // Filter: Guilds where user is admin/owner AND bot is present
+        // Filter: Guilds where user is admin/owner/manage_server AND bot is present
         const botGuildIds = new Set(botGuilds.map((g: any) => g.id));
         
         const validGuilds = userGuilds.filter((g: any) => {
             const perms = BigInt(g.permissions || 0);
-            const isAdmin = (perms & 8n) === 8n || g.owner; // 8n is ADMINISTRATOR
-            return isAdmin && botGuildIds.has(g.id);
+            const isAdmin = (perms & 8n) === 8n; // Administrator
+            const isManager = (perms & 32n) === 32n; // Manage Server
+            return (isAdmin || isManager || g.owner) && botGuildIds.has(g.id);
         });
 
         if (validGuilds.length === 0) {
@@ -82,13 +83,17 @@ export async function GET(request: Request) {
         });
         const channels = await channelsRes.json();
 
-        // Filter for category channels (type 4) and text channels (type 0)
+        // Filter for category channels (type 4), text channels (type 0), and voice channels (type 2)
         const categories = channels
             .filter((c: any) => c.type === 4)
             .map((c: any) => ({ id: c.id, name: c.name }));
             
         const textChannels = channels
             .filter((c: any) => c.type === 0)
+            .map((c: any) => ({ id: c.id, name: c.name }));
+
+        const voiceChannels = channels
+            .filter((c: any) => c.type === 2)
             .map((c: any) => ({ id: c.id, name: c.name }));
 
         return NextResponse.json({
@@ -98,6 +103,7 @@ export async function GET(request: Request) {
             roles: formattedRoles,
             categories,
             textChannels,
+            voiceChannels,
             debug: { userGuildsCount: userGuilds.length, botGuildsCount: botGuilds.length }
         });
 

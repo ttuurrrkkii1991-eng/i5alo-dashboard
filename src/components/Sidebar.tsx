@@ -60,9 +60,13 @@ export default function Sidebar() {
         fetch('/api/discord/data')
             .then(res => res.json())
             .then(data => {
-                if (data.guild) setGuild(data.guild);
+                if (data.guild) {
+                    setGuild(data.guild);
+                } else {
+                    setGuild({ name: "لا توجد صلاحيات", id: null, icon: null });
+                }
             })
-            .catch(() => setGuild({ name: "سيرفر غير معروف", id: null, icon: null }));
+            .catch(() => setGuild({ name: "لا توجد صلاحيات", id: null, icon: null }));
     }, []);
 
     const iconUrl = guild.icon 
@@ -109,6 +113,7 @@ export default function Sidebar() {
                     <SidebarItem href="/custom-link" icon={LinkIcon} title="الرابط" />
                     <SidebarItem href="/statistics" icon={Star} title="Statistics" enabled={true} />
                     <SidebarItem href="/tickets" icon={MessageSquare} title="التذاكر" enabled={true} />
+                    <SidebarItem href="/applications" icon={FileClock} title="التقديمات (Forms)" enabled={true} />
                 </SidebarSection>
 
                 <SidebarSection title="الإشراف">
