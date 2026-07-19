@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { Bot } from 'lucide-react';
+import { useSession, signIn } from "next-auth/react";
 
 export default function ServerSelector() {
+    const { data: session } = useSession();
     const [guilds, setGuilds] = useState([]);
     const [activeGuild, setActiveGuild] = useState(null);
 
@@ -25,11 +27,24 @@ export default function ServerSelector() {
     return (
         <nav className="w-[72px] h-screen bg-[#1e1f22] flex flex-col items-center py-3 gap-2 shrink-0 z-20">
             
-            {/* Bot Profile / Home */}
-            <div className="relative group flex justify-center w-full mb-2">
+            {/* User Profile / Home */}
+            <div 
+                className="relative group flex justify-center w-full mb-2 cursor-pointer"
+                onClick={() => { if (!session) signIn("discord"); }}
+            >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                <div className="w-12 h-12 rounded-[24px] hover:rounded-[16px] bg-[#313338] hover:bg-emerald-500 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-300 cursor-pointer shadow-md overflow-hidden">
-                    <Bot className="w-7 h-7" />
+                <div className="w-12 h-12 rounded-[24px] hover:rounded-[16px] bg-[#313338] hover:bg-emerald-500 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-md overflow-hidden border-2 border-transparent hover:border-indigo-500">
+                    {session?.user?.image ? (
+                        <img src={session.user.image} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                        <Bot className="w-7 h-7" />
+                    )}
+                </div>
+                
+                {/* Tooltip */}
+                <div className="absolute right-[85px] top-1/2 -translate-y-1/2 bg-black text-white text-sm font-bold py-1.5 px-3 rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 flex items-center">
+                    {session?.user?.name || "تسجيل الدخول"}
+                    <div className="absolute -right-1 top-1/2 -translate-y-1/2 border-[6px] border-transparent border-l-black"></div>
                 </div>
             </div>
 
