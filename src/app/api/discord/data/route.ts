@@ -49,6 +49,17 @@ export async function GET(request: Request) {
         const selectedGuild = validGuilds[0];
         const guildId = selectedGuild.id;
 
+        // Fetch full guild object (to get member count)
+        const fullGuildRes = await fetch(`${DISCORD_API}/guilds/${guildId}?with_counts=true`, {
+            headers: { Authorization: `Bot ${BOT_TOKEN}` }
+        });
+        const fullGuild = await fullGuildRes.json();
+        
+        // Merge full guild data into selectedGuild
+        if (fullGuild.approximate_member_count) {
+            selectedGuild.memberCount = fullGuild.approximate_member_count;
+        }
+
         // 2. Fetch roles for this guild
         const rolesRes = await fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
             headers: { Authorization: `Bot ${BOT_TOKEN}` }
