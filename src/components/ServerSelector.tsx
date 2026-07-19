@@ -16,8 +16,8 @@ export default function ServerSelector() {
             .then(data => {
                 if (data.allGuilds) {
                     setGuilds(data.allGuilds);
-                    if (data.allGuilds.length > 0) {
-                        setActiveGuild(data.allGuilds[0].id);
+                    if (data.guild) {
+                        setActiveGuild(data.guild.id);
                     }
                 }
             })
@@ -59,7 +59,15 @@ export default function ServerSelector() {
                         : null;
 
                     return (
-                        <div key={guild.id} className="relative group flex justify-center w-full cursor-pointer" onClick={() => setActiveGuild(guild.id)}>
+                        <div 
+                            key={guild.id} 
+                            className="relative group flex justify-center w-full cursor-pointer" 
+                            onClick={() => {
+                                document.cookie = `selectedGuildId=${guild.id}; path=/; max-age=31536000`;
+                                setActiveGuild(guild.id);
+                                window.location.reload();
+                            }}
+                        >
                             {/* Active/Hover Indicator */}
                             <div className={clsx(
                                 "absolute right-0 top-1/2 -translate-y-1/2 w-1 rounded-l-full transition-all duration-300",

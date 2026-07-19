@@ -51,7 +51,16 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'No mutual servers found' }, { status: 404 });
         }
 
-        const selectedGuild = validGuilds[0];
+        const cookieStore = require('next/headers').cookies();
+        const selectedGuildId = cookieStore.get('selectedGuildId')?.value;
+
+        let selectedGuild = validGuilds[0];
+        if (selectedGuildId) {
+            const found = validGuilds.find((g: any) => g.id === selectedGuildId);
+            if (found) {
+                selectedGuild = found;
+            }
+        }
         const guildId = selectedGuild.id;
 
         // Fetch full guild object (to get member count)
