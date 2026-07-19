@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
+export const dynamic = 'force-dynamic';
+
 const DISCORD_API = 'https://discord.com/api/v10';
 const BOT_TOKEN = process.env.DISCORD_TOKEN;
 
@@ -19,13 +21,15 @@ export async function GET(request: Request) {
     try {
         // Fetch User's Guilds using their OAuth access token
         const userGuildsRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-            headers: { Authorization: `Bearer ${session.accessToken}` }
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+            cache: 'no-store'
         });
         const userGuilds = await userGuildsRes.json();
 
         // Fetch Bot's Guilds
         const botGuildsRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` }
+            headers: { Authorization: `Bot ${BOT_TOKEN}` },
+            cache: 'no-store'
         });
         const botGuilds = await botGuildsRes.json();
 
@@ -52,7 +56,8 @@ export async function GET(request: Request) {
 
         // Fetch full guild object (to get member count)
         const fullGuildRes = await fetch(`${DISCORD_API}/guilds/${guildId}?with_counts=true`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` }
+            headers: { Authorization: `Bot ${BOT_TOKEN}` },
+            cache: 'no-store'
         });
         const fullGuild = await fullGuildRes.json();
         
@@ -63,7 +68,8 @@ export async function GET(request: Request) {
 
         // 2. Fetch roles for this guild
         const rolesRes = await fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` }
+            headers: { Authorization: `Bot ${BOT_TOKEN}` },
+            cache: 'no-store'
         });
         const roles = await rolesRes.json();
 
@@ -79,7 +85,8 @@ export async function GET(request: Request) {
 
         // 3. Fetch channels for this guild
         const channelsRes = await fetch(`${DISCORD_API}/guilds/${guildId}/channels`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` }
+            headers: { Authorization: `Bot ${BOT_TOKEN}` },
+            cache: 'no-store'
         });
         const channels = await channelsRes.json();
 
