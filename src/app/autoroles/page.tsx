@@ -5,11 +5,13 @@ import { Bot, Save, Users, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function AutoRolesPage() {
-    const [enabled, setEnabled] = useState(true);
-    const [roles, setRoles] = useState([]);
+    const [guildId, setGuildId] = useState<string | null>(null);
+    const [enabled, setEnabled] = useState(false);
+    const [roles, setRoles] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [humanRoles, setHumanRoles] = useState([]);
-    const [botRoles, setBotRoles] = useState([]);
+    const [saving, setSaving] = useState(false);
+    const [humanRoles, setHumanRoles] = useState<any[]>([]);
+    const [botRoles, setBotRoles] = useState<any[]>([]);
 
     useEffect(() => {
         fetch('/api/discord/data')
@@ -18,36 +20,95 @@ export default function AutoRolesPage() {
                 if (data.roles) {
                     setRoles(data.roles);
                 }
-                setLoading(false);
+                if (data.guild) {
+                    setGuildId(data.guild.id);
+                }
             })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
+            .catch(err => console.error(err));
     }, []);
 
-    const addHumanRole = (e) => {
+    useEffect(() => {
+        if (!guildId || roles.length === 0) return;
+        setLoading(true);
+        fetch(`/api/settings/auto-role?guildId=${guildId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.settings) {
+                    setEnabled(data.settings.enabled);
+                    
+                    // Map Role IDs back to full role objects for display
+                    const hRoles = (data.settings.humanRoles || []).map((id: string) => roles.find(r => r.id === id)).filter(Boolean);
+                    const bRoles = (data.settings.botRoles || []).map((id: string) => roles.find(r => r.id === id)).filter(Boolean);
+                    
+                    setHumanRoles(hRoles);
+                    setBotRoles(bRoles);
+                }
+            })
+            .finally(() => setLoading(false));
+    }, [guildId, roles]);
+
+    const saveSettings = async (newEnabled: boolean, newHumanRoles: any[], newBotRoles: any[]) => {
+        if (!guildId) return;
+        setSaving(true);
+        try {
+            await fetch('/api/settings/auto-role', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    guildId, 
+                    enabled: newEnabled, 
+                    humanRoles: newHumanRoles.map(r => r.id), 
+                    botRoles: newBotRoles.map(r => r.id) 
+                })
+            });
+        } catch (e) {
+            console.error(e);
+        }
+        setSaving(false);
+    };
+
+    const handleToggle = (newEnabled: boolean) => {
+        setEnabled(newEnabled);
+        saveSettings(newEnabled, humanRoles, botRoles);
+    };
+
+    const addHumanRole = (e: any) => {
         const roleId = e.target.value;
         if (!roleId) return;
         const role = roles.find(r => r.id === roleId);
         if (role && !humanRoles.find(r => r.id === roleId)) {
-            setHumanRoles([...humanRoles, role]);
+            const updated = [...humanRoles, role];
+            setHumanRoles(updated);
+            saveSettings(enabled, updated, botRoles);
         }
         e.target.value = "";
     };
 
-    const addBotRole = (e) => {
+    const addBotRole = (e: any) => {
         const roleId = e.target.value;
         if (!roleId) return;
         const role = roles.find(r => r.id === roleId);
         if (role && !botRoles.find(r => r.id === roleId)) {
-            setBotRoles([...botRoles, role]);
+            const updated = [...botRoles, role];
+            setBotRoles(updated);
+            saveSettings(enabled, humanRoles, updated);
         }
         e.target.value = "";
     };
 
-    const removeHumanRole = (id) => setHumanRoles(humanRoles.filter(r => r.id !== id));
-    const removeBotRole = (id) => setBotRoles(botRoles.filter(r => r.id !== id));
+    const removeHumanRole = (id: string) => {
+        const updated = humanRoles.filter(r => r.id !== id);
+        setHumanRoles(updated);
+        saveSettings(enabled, updated, botRoles);
+    };
+
+    const removeBotRole = (id: string) => {
+        const updated = botRoles.filter(r => r.id !== id);
+        setBotRoles(updated);
+        saveSettings(enabled, humanRoles, updated);
+    };
+
+    if (loading && !guildId) return <div className="text-center pt-20 text-white">جاري التحميل...</div>;
 
     return (
         <div className="space-y-6">
@@ -68,7 +129,7 @@ export default function AutoRolesPage() {
                         "w-14 h-7 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
                         enabled ? "bg-indigo-500" : "bg-gray-600"
                     )}
-                    onClick={() => setEnabled(!enabled)}
+                    onClick={() => handleToggle(!enabled)}
                 >
                     <div 
                         className={clsx(
