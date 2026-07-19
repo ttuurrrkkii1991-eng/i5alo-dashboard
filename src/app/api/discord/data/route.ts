@@ -52,7 +52,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'No mutual servers found' }, { status: 404 });
         }
 
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const selectedGuildId = cookieStore.get('selectedGuildId')?.value;
 
         let selectedGuild = validGuilds[0];
