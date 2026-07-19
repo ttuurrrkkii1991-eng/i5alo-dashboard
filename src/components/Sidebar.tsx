@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-const SidebarItem = ({ icon: Icon, title, href, premium = false, enabled = false }) => {
+const SidebarItem = ({ icon: Icon, title, href, enabled = false }) => {
     const pathname = usePathname();
     const active = pathname === href;
     
@@ -24,11 +24,6 @@ const SidebarItem = ({ icon: Icon, title, href, premium = false, enabled = false
                 <span className={clsx("font-medium transition-colors", active ? "text-white" : "text-gray-300 group-hover:text-white")}>
                     {title}
                 </span>
-                {premium && (
-                    <span className="bg-[#b38822]/20 text-[#f1c40f] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 border border-[#f1c40f]/20">
-                        <Crown className="w-3 h-3" /> بريميوم
-                    </span>
-                )}
             </div>
             {enabled && (
                 <div className="bg-emerald-500 rounded-full p-0.5 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
@@ -111,8 +106,8 @@ export default function Sidebar() {
                     <SidebarItem href="/claimable-roles" icon={Users} title="الرولات القابلة للأخذ" enabled={true} />
                     <SidebarItem href="/starboard" icon={Star} title="ستاربورد" enabled={true} />
                     <SidebarItem href="/temp-channels" icon={Clock} title="الرومات المؤقتة" enabled={true} />
-                    <SidebarItem href="/custom-link" icon={LinkIcon} title="الرابط" premium={true} />
-                    <SidebarItem href="/statistics" icon={Star} title="Statistics" premium={true} enabled={true} />
+                    <SidebarItem href="/custom-link" icon={LinkIcon} title="الرابط" />
+                    <SidebarItem href="/statistics" icon={Star} title="Statistics" enabled={true} />
                     <SidebarItem href="/tickets" icon={MessageSquare} title="التذاكر" enabled={true} />
                 </SidebarSection>
 
@@ -120,8 +115,8 @@ export default function Sidebar() {
                     <SidebarItem href="/moderation" icon={Settings} title="الإشراف" enabled={true} />
                     <SidebarItem href="/logs" icon={FileClock} title="اللوق" enabled={true} />
                     <SidebarItem href="/automod" icon={Bot} title="الرقابة التلقائية" enabled={true} />
-                    <SidebarItem href="/anti-raid" icon={ShieldAlert} title="مكافحة الغزو" premium={true} enabled={true} />
-                    <SidebarItem href="/special-protection" icon={Shield} title="الحماية الخاصة" premium={true} enabled={true} />
+                    <SidebarItem href="/anti-raid" icon={ShieldAlert} title="مكافحة الغزو" enabled={true} />
+                    <SidebarItem href="/special-protection" icon={Shield} title="الحماية الخاصة" enabled={true} />
                 </SidebarSection>
 
             </div>

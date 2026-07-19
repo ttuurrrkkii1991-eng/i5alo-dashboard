@@ -38,7 +38,7 @@ const SubToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const LogCard = ({ title, eventKey, premium = false, channels = [], settings = {}, guildId }: any) => {
+const LogCard = ({ title, eventKey, channels = [], settings = {}, guildId }: any) => {
     const defaultData = settings[eventKey] || { enabled: false, channelId: '', color: '#000000' };
     
     const [enabled, setEnabled] = useState(defaultData.enabled);
@@ -75,11 +75,6 @@ const LogCard = ({ title, eventKey, premium = false, channels = [], settings = {
                 <SubToggle enabled={enabled} onChange={(val: boolean) => { setEnabled(val); saveSetting({ enabled: val }); }} />
                 <div className="flex flex-col items-end">
                     <h3 className="text-white font-medium text-sm text-right">{title}</h3>
-                    {premium && (
-                        <span className="bg-[#b38822]/20 text-[#f1c40f] text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 border border-[#f1c40f]/20 mt-1">
-                            بريميوم باقة 2
-                        </span>
-                    )}
                 </div>
             </div>
 
@@ -184,10 +179,10 @@ export default function LogsPage() {
                         {/* Row 4 */}
                         <LogCard title="تعديل الرسالة" eventKey="messageUpdate" channels={channels} settings={settings} guildId={guildId} />
                         <LogCard title="طرد العضو" eventKey="memberKick" channels={channels} settings={settings} guildId={guildId} />
-                        <LogCard title="تم نقل العضو إلى روم صوتي آخر" eventKey="voiceMove" premium={true} channels={channels} settings={settings} guildId={guildId} />
+                        <LogCard title="تم نقل العضو إلى روم صوتي آخر" eventKey="voiceMove" channels={channels} settings={settings} guildId={guildId} />
 
                         {/* Row 5 */}
-                        <LogCard title="تم قطع إتصال العضو من الروم الصوتي" eventKey="voiceDisconnect" premium={true} channels={channels} settings={settings} guildId={guildId} />
+                        <LogCard title="تم قطع إتصال العضو من الروم الصوتي" eventKey="voiceDisconnect" channels={channels} settings={settings} guildId={guildId} />
                         <LogCard title="دخول عضو إلى السيرفر" eventKey="guildMemberAdd" channels={channels} settings={settings} guildId={guildId} />
                         <LogCard title="خروج عضو من السيرفر" eventKey="guildMemberRemove" channels={channels} settings={settings} guildId={guildId} />
 
