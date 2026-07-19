@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'No mutual servers found' }, { status: 404 });
         }
 
-        const cookieStore = require('next/headers').cookies();
+        const cookieStore = cookies();
         const selectedGuildId = cookieStore.get('selectedGuildId')?.value;
 
         let selectedGuild = validGuilds[0];
