@@ -4,6 +4,8 @@ import { authOptions } from '../../auth/[...nextauth]/route';
 import connectDB from '@/lib/mongoose';
 import GuildLogs from '@/lib/models/GuildLogs';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
