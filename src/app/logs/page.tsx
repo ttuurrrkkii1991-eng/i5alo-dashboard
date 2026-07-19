@@ -131,7 +131,7 @@ export default function LogsPage() {
                 }
                 if (data.guild) {
                     setGuildId(data.guild.id);
-                    fetch(`/api/settings/logs?guildId=${data.guild.id}`)
+                    fetch(`/api/settings/logs?guildId=${data.guild.id}`, { cache: 'no-store' })
                         .then(r => r.json())
                         .then(logData => {
                             if (logData.events) setSettings(logData.events);

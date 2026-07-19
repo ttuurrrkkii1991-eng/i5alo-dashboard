@@ -5,6 +5,8 @@ import connectDB from '@/lib/mongoose';
 import GuildLogs from '@/lib/models/GuildLogs';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 export async function GET(request: Request) {
     const session = await getServerSession(authOptions);
@@ -25,7 +27,13 @@ export async function GET(request: Request) {
             await logs.save();
         }
 
-        return NextResponse.json(logs);
+        return NextResponse.json(logs.toJSON(), {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+            }
+        });
     } catch (error) {
         console.error("GET Logs Error:", error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -66,7 +74,13 @@ export async function POST(request: Request) {
 
         await logs.save();
 
-        return NextResponse.json(logs);
+        return NextResponse.json(logs.toJSON(), {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+            }
+        });
     } catch (error) {
         console.error("POST Logs Error:", error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
