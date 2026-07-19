@@ -15,7 +15,7 @@ export async function GET() {
         await log.save();
         
         // Read it back
-        const result = await GuildLogs.findOne({ guildId: 'test-guild' });
+        const result = await GuildLogs.find({});
 
         return NextResponse.json({ success: true, message: 'Database connected and saved!', data: result });
     } catch (error: any) {
