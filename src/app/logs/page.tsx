@@ -38,7 +38,7 @@ const SubToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const LogCard = ({ title, premium = false, defaultEnabled = false }) => {
+const LogCard = ({ title, premium = false, defaultEnabled = false, channels = [] }: any) => {
     const [enabled, setEnabled] = useState(defaultEnabled);
     const [color, setColor] = useState("#000000");
 
@@ -61,7 +61,10 @@ const LogCard = ({ title, premium = false, defaultEnabled = false }) => {
             {/* Channel Select */}
             <div>
                 <select className="w-full bg-[#1e1f22] border border-white/5 rounded-lg p-2.5 text-white text-right text-sm outline-none focus:border-indigo-500/50 appearance-none" dir="rtl">
-                    <option>اختر ..</option>
+                    <option value="">اختر الروم ..</option>
+                    {channels.map((c: any) => (
+                        <option key={c.id} value={c.id}># {c.name}</option>
+                    ))}
                 </select>
             </div>
 
@@ -84,6 +87,18 @@ const LogCard = ({ title, premium = false, defaultEnabled = false }) => {
 
 export default function LogsPage() {
     const [globalEnabled, setGlobalEnabled] = useState(true);
+    const [channels, setChannels] = useState([]);
+
+    React.useEffect(() => {
+        fetch('/api/discord/data')
+            .then(res => res.json())
+            .then(data => {
+                if (data.textChannels) {
+                    setChannels(data.textChannels);
+                }
+            })
+            .catch(console.error);
+    }, []);
 
     return (
         <div className="max-w-6xl mx-auto pt-6 space-y-6 pb-20">
@@ -99,54 +114,54 @@ export default function LogsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         
                         {/* Row 1 */}
-                        <LogCard title="إضافة باند" />
-                        <LogCard title="التايم اوت ( إعطاء / أزاله )" />
-                        <LogCard title="إنشاء روم جديد" />
+                        <LogCard title="إضافة باند" channels={channels} />
+                        <LogCard title="التايم اوت ( إعطاء / أزاله )" channels={channels} />
+                        <LogCard title="إنشاء روم جديد" channels={channels} />
 
                         {/* Row 2 */}
-                        <LogCard title="تم إنشاء ثريد" />
-                        <LogCard title="إنشاء رتبة" />
-                        <LogCard title="حذف الروم" />
+                        <LogCard title="تم إنشاء ثريد" channels={channels} />
+                        <LogCard title="إنشاء رتبة" channels={channels} />
+                        <LogCard title="حذف الروم" channels={channels} />
 
                         {/* Row 3 */}
-                        <LogCard title="تم حذف الثريد" />
-                        <LogCard title="حذف رسالة" />
-                        <LogCard title="حذف رتبة" />
+                        <LogCard title="تم حذف الثريد" channels={channels} />
+                        <LogCard title="حذف رسالة" channels={channels} />
+                        <LogCard title="حذف رتبة" channels={channels} />
 
                         {/* Row 4 */}
-                        <LogCard title="تعديل الرسالة" />
-                        <LogCard title="طرد العضو" />
-                        <LogCard title="تم نقل العضو إلى روم صوتي آخر" premium={true} />
+                        <LogCard title="تعديل الرسالة" channels={channels} />
+                        <LogCard title="طرد العضو" channels={channels} />
+                        <LogCard title="تم نقل العضو إلى روم صوتي آخر" premium={true} channels={channels} />
 
                         {/* Row 5 */}
-                        <LogCard title="تم قطع إتصال العضو من الروم الصوتي" premium={true} />
-                        <LogCard title="دخول عضو إلى السيرفر" />
-                        <LogCard title="خروج عضو من السيرفر" />
+                        <LogCard title="تم قطع إتصال العضو من الروم الصوتي" premium={true} channels={channels} />
+                        <LogCard title="دخول عضو إلى السيرفر" channels={channels} />
+                        <LogCard title="خروج عضو من السيرفر" channels={channels} />
 
                         {/* Row 6 */}
-                        <LogCard title="تغيير اسم مستعار" />
-                        <LogCard title="أمر المشرف المستخدم" />
-                        <LogCard title="إعطاء رتبة" />
+                        <LogCard title="تغيير اسم مستعار" channels={channels} />
+                        <LogCard title="أمر المشرف المستخدم" channels={channels} />
+                        <LogCard title="إعطاء رتبة" channels={channels} />
 
                         {/* Row 7 */}
-                        <LogCard title="سحب رتبة" />
-                        <LogCard title="دعوات السيرفرات" />
-                        <LogCard title="فك الباند" />
+                        <LogCard title="سحب رتبة" channels={channels} />
+                        <LogCard title="دعوات السيرفرات" channels={channels} />
+                        <LogCard title="فك الباند" channels={channels} />
 
                         {/* Row 8 */}
-                        <LogCard title="تعديل الروم" />
-                        <LogCard title="تم تحديث الثريد" />
-                        <LogCard title="تعديل صلاحيات الروم" />
+                        <LogCard title="تعديل الروم" channels={channels} />
+                        <LogCard title="تم تحديث الثريد" channels={channels} />
+                        <LogCard title="تعديل صلاحيات الروم" channels={channels} />
 
                         {/* Row 9 */}
-                        <LogCard title="تعديل رتبة" />
-                        <LogCard title="تغيير إعدادات السيرفر" />
-                        <LogCard title="دخول عضو لروم صوتي" />
+                        <LogCard title="تعديل رتبة" channels={channels} />
+                        <LogCard title="تغيير إعدادات السيرفر" channels={channels} />
+                        <LogCard title="دخول عضو لروم صوتي" channels={channels} />
 
                         {/* Row 10 */}
-                        <LogCard title="خروج عضو من روم صوتي" />
-                        <LogCard title="حالة الصوت (ميوت \ ديفن)" />
-                        <LogCard title="تنقل العضو بين الرومات" />
+                        <LogCard title="خروج عضو من روم صوتي" channels={channels} />
+                        <LogCard title="حالة الصوت (ميوت \ ديفن)" channels={channels} />
+                        <LogCard title="تنقل العضو بين الرومات" channels={channels} />
 
                     </div>
                 </div>
