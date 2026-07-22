@@ -31,8 +31,17 @@ export async function GET(request: Request) {
     }
 }
 
+import { logDashboardAction } from '@/lib/logger';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 export async function POST(request: Request) {
     try {
+        const session: any = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await request.json();
         const { guildId, enabled, textPoints, imagePoints, cooldown } = body;
 
@@ -46,6 +55,12 @@ export async function POST(request: Request) {
             { enabled, textPoints, imagePoints, cooldown },
             { new: true, upsert: true }
         );
+
+        await logDashboardAction({
+            guildId,
+            user: session.user,
+            action: 'تعديل إعدادات نظام اللفلات'
+        });
 
         return NextResponse.json(settings);
     } catch (error: any) {
