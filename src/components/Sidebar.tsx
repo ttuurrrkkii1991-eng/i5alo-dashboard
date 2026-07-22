@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { 
     Settings, MessageSquare, Diamond, Eye, Shield, Link as LinkIcon, 
     Star, Users, Clock, Palette, CheckCircle2, Crown, Bot,
-    ChevronDown, ShieldAlert, FileClock
+    ChevronDown, ShieldAlert, FileClock, Wrench, FileText
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -122,6 +122,11 @@ export default function Sidebar() {
                     <SidebarItem href="/automod" icon={Bot} title="الرقابة التلقائية" enabled={true} />
                     <SidebarItem href="/anti-raid" icon={ShieldAlert} title="مكافحة الغزو" enabled={true} />
                     <SidebarItem href="/special-protection" icon={Shield} title="الحماية الخاصة" enabled={true} />
+                </SidebarSection>
+
+                <SidebarSection title="اخرى">
+                    <SidebarItem href="/dashboard-logs" icon={Wrench} title="سجل لوحة التحكم" />
+                    <SidebarItem href="/moderator-actions" icon={FileText} title="اجراءات المراقب" />
                 </SidebarSection>
 
             </div>
