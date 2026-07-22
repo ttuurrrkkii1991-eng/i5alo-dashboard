@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import connectDB from '@/lib/mongoose';
 import GuildLogs from '@/lib/models/GuildLogs';
+import { logDashboardAction } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -73,6 +74,12 @@ export async function POST(request: Request) {
         }
 
         await logs.save();
+
+        await logDashboardAction({
+            guildId,
+            user: session.user,
+            action: 'تعديل إعدادات اللوق'
+        });
 
         return NextResponse.json(logs.toJSON(), {
             headers: {

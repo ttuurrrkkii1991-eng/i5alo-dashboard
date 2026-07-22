@@ -28,8 +28,17 @@ export async function GET(req: Request) {
     }
 }
 
+import { logDashboardAction } from '@/lib/logger';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 export async function POST(req: Request) {
     try {
+        const session: any = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' });
+        }
+
         await connectDB();
         const body = await req.json();
         const { guildId, title, sendChannelId, receiveChannelId, acceptedRoleId, questions, status } = body;
@@ -43,6 +52,12 @@ export async function POST(req: Request) {
             { title, sendChannelId, receiveChannelId, acceptedRoleId, questions, status },
             { new: true, upsert: true }
         );
+
+        await logDashboardAction({
+            guildId,
+            user: session.user,
+            action: 'تعديل إعدادات التقديمات'
+        });
 
         // Notify the bot to send the applications panel via Discord API
         try {
