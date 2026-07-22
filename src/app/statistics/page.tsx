@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Star, Crown, BarChart3, Activity, Users, Clock } from 'lucide-react';
 import clsx from 'clsx';
 
-const StatCard = ({ title, value, subtitle, icon: Icon, iconBg, iconColor }) => (
+const StatCard = ({ title, value, subtitle, icon: Icon, iconBg, iconColor }: any) => (
     <div className="bg-[#242529] border border-white/5 hover:border-indigo-500/30 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all group relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl rounded-full group-hover:bg-indigo-500/10 transition-colors"></div>
         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 relative z-10 ${iconBg}`}>

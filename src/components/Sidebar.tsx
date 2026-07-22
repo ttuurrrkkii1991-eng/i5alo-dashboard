@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -10,31 +10,54 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 
-const SidebarItem = ({ icon: Icon, title, href, enabled = false }) => {
+interface SidebarItemProps {
+    icon: any;
+    title: string;
+    href: string;
+    featureId?: string;
+    enabled?: boolean;
+    onToggle?: (featureId: string, newState: boolean) => void;
+}
+
+const SidebarItem = ({ icon: Icon, title, href, featureId, enabled = false, onToggle }: SidebarItemProps) => {
     const pathname = usePathname();
     const active = pathname === href;
     
     return (
-        <Link href={href || "#"} className={clsx(
-            "flex items-center justify-between px-4 py-3 cursor-pointer rounded-xl transition-all duration-300 group",
+        <div className={clsx(
+            "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group",
             active ? "bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]" : "hover:bg-white/5"
         )}>
-            <div className="flex items-center gap-3">
+            <Link href={href || "#"} className="flex items-center gap-3 flex-1">
                 <Icon className={clsx("w-5 h-5 transition-colors", active ? "text-white" : "text-gray-400 group-hover:text-gray-200")} />
                 <span className={clsx("font-medium transition-colors", active ? "text-white" : "text-gray-300 group-hover:text-white")}>
                     {title}
                 </span>
-            </div>
-            {enabled && (
-                <div className="bg-emerald-500 rounded-full p-0.5 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
-                    <CheckCircle2 className="w-4 h-4 text-white" />
+            </Link>
+            {featureId && (
+                <div 
+                    onClick={() => {
+                        if (onToggle) onToggle(featureId, !enabled);
+                    }}
+                    className={clsx(
+                        "w-5 h-5 rounded-full flex items-center justify-center transition-all cursor-pointer hover:scale-110 shrink-0",
+                        enabled ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-white/10 border border-white/20 hover:border-white/40"
+                    )}
+                >
+                    {enabled && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                 </div>
             )}
-        </Link>
+        </div>
     );
 };
 
-const SidebarSection = ({ title, children, defaultOpen = true }) => {
+interface SidebarSectionProps {
+    title: string;
+    children: React.ReactNode;
+    defaultOpen?: boolean;
+}
+
+const SidebarSection = ({ title, children, defaultOpen = true }: SidebarSectionProps) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
@@ -54,20 +77,48 @@ const SidebarSection = ({ title, children, defaultOpen = true }) => {
 };
 
 export default function Sidebar() {
-    const [guild, setGuild] = useState({ name: "جاري التحميل...", id: null, icon: null });
+    const [guild, setGuild] = useState<any>({ name: "جاري التحميل...", id: null, icon: null });
+    const [features, setFeatures] = useState<Record<string, boolean>>({});
     
-    React.useEffect(() => {
+    useEffect(() => {
         fetch('/api/discord/data')
             .then(res => res.json())
             .then(data => {
                 if (data.guild) {
                     setGuild(data.guild);
+                    // Fetch features for this guild
+                    fetch(`/api/features?guildId=${data.guild.id}`)
+                        .then(res => res.json())
+                        .then(fData => {
+                            if (fData.features) setFeatures(fData.features);
+                        })
+                        .catch(console.error);
                 } else {
                     setGuild({ name: "لا توجد صلاحيات", id: null, icon: null });
                 }
             })
             .catch(() => setGuild({ name: "لا توجد صلاحيات", id: null, icon: null }));
     }, []);
+
+    const handleToggle = async (featureId: string, newState: boolean) => {
+        if (!guild.id) return;
+        
+        // Optimistic update
+        setFeatures(prev => ({ ...prev, [featureId]: newState }));
+        
+        try {
+            const res = await fetch('/api/features', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ guildId: guild.id, featureId, enabled: newState })
+            });
+            if (!res.ok) throw new Error('Failed to update');
+        } catch (error) {
+            console.error('Failed to toggle feature', error);
+            // Revert on error
+            setFeatures(prev => ({ ...prev, [featureId]: !newState }));
+        }
+    };
 
     const iconUrl = guild.icon 
         ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` 
@@ -101,27 +152,27 @@ export default function Sidebar() {
                 </SidebarSection>
 
                 <SidebarSection title="قائمة الخصائص">
-                    <SidebarItem href="/commands" icon={Settings} title="الأوامر العامة" enabled={true} />
-                    <SidebarItem href="/welcome" icon={Users} title="الترحيب & المغادرة" enabled={true} />
-                    <SidebarItem href="/autoreply" icon={MessageSquare} title="الرد التلقائي" enabled={true} />
-                    <SidebarItem href="/levels" icon={Star} title="نظام اللفلات" enabled={true} />
-                    <SidebarItem href="/autoroles" icon={Bot} title="الرولات التلقائية" enabled={true} />
-                    <SidebarItem href="/colors" icon={Palette} title="الألوان" enabled={true} />
-                    <SidebarItem href="/claimable-roles" icon={Users} title="الرولات القابلة للأخذ" enabled={true} />
-                    <SidebarItem href="/starboard" icon={Star} title="ستاربورد" enabled={true} />
-                    <SidebarItem href="/temp-channels" icon={Clock} title="الرومات المؤقتة" enabled={true} />
+                    <SidebarItem href="/commands" icon={Settings} title="الأوامر العامة" featureId="commands" enabled={features['commands']} onToggle={handleToggle} />
+                    <SidebarItem href="/welcome" icon={Users} title="الترحيب & المغادرة" featureId="welcome" enabled={features['welcome']} onToggle={handleToggle} />
+                    <SidebarItem href="/autoreply" icon={MessageSquare} title="الرد التلقائي" featureId="autoreply" enabled={features['autoreply']} onToggle={handleToggle} />
+                    <SidebarItem href="/levels" icon={Star} title="نظام اللفلات" featureId="levels" enabled={features['levels']} onToggle={handleToggle} />
+                    <SidebarItem href="/autoroles" icon={Bot} title="الرولات التلقائية" featureId="autoroles" enabled={features['autoroles']} onToggle={handleToggle} />
+                    <SidebarItem href="/colors" icon={Palette} title="الألوان" featureId="colors" enabled={features['colors']} onToggle={handleToggle} />
+                    <SidebarItem href="/claimable-roles" icon={Users} title="الرولات القابلة للأخذ" featureId="claimable-roles" enabled={features['claimable-roles']} onToggle={handleToggle} />
+                    <SidebarItem href="/starboard" icon={Star} title="ستاربورد" featureId="starboard" enabled={features['starboard']} onToggle={handleToggle} />
+                    <SidebarItem href="/temp-channels" icon={Clock} title="الرومات المؤقتة" featureId="temp-channels" enabled={features['temp-channels']} onToggle={handleToggle} />
                     <SidebarItem href="/custom-link" icon={LinkIcon} title="الرابط" />
-                    <SidebarItem href="/statistics" icon={Star} title="Statistics" enabled={true} />
-                    <SidebarItem href="/tickets" icon={MessageSquare} title="التذاكر" enabled={true} />
-                    <SidebarItem href="/applications" icon={FileClock} title="التقديمات (Forms)" enabled={true} />
+                    <SidebarItem href="/statistics" icon={Star} title="Statistics" featureId="statistics" enabled={features['statistics']} onToggle={handleToggle} />
+                    <SidebarItem href="/tickets" icon={MessageSquare} title="التذاكر" featureId="tickets" enabled={features['tickets']} onToggle={handleToggle} />
+                    <SidebarItem href="/applications" icon={FileClock} title="التقديمات (Forms)" featureId="applications" enabled={features['applications']} onToggle={handleToggle} />
                 </SidebarSection>
 
                 <SidebarSection title="الإشراف">
-                    <SidebarItem href="/moderation" icon={Settings} title="الإشراف" enabled={true} />
-                    <SidebarItem href="/logs" icon={FileClock} title="اللوق" enabled={true} />
-                    <SidebarItem href="/automod" icon={Bot} title="الرقابة التلقائية" enabled={true} />
-                    <SidebarItem href="/anti-raid" icon={ShieldAlert} title="مكافحة الغزو" enabled={true} />
-                    <SidebarItem href="/special-protection" icon={Shield} title="الحماية الخاصة" enabled={true} />
+                    <SidebarItem href="/moderation" icon={Settings} title="الإشراف" featureId="moderation" enabled={features['moderation']} onToggle={handleToggle} />
+                    <SidebarItem href="/logs" icon={FileClock} title="اللوق" featureId="logs" enabled={features['logs']} onToggle={handleToggle} />
+                    <SidebarItem href="/automod" icon={Bot} title="الرقابة التلقائية" featureId="automod" enabled={features['automod']} onToggle={handleToggle} />
+                    <SidebarItem href="/anti-raid" icon={ShieldAlert} title="مكافحة الغزو" featureId="anti-raid" enabled={features['anti-raid']} onToggle={handleToggle} />
+                    <SidebarItem href="/special-protection" icon={Shield} title="الحماية الخاصة" featureId="special-protection" enabled={features['special-protection']} onToggle={handleToggle} />
                 </SidebarSection>
 
                 <SidebarSection title="اخرى">
@@ -133,3 +184,4 @@ export default function Sidebar() {
         </aside>
     );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { SettingsCard } from '@/components/ui/SettingsCard';
+
 import { Wrench, Clock, User, AlertCircle, Settings } from 'lucide-react';
 
 export default function DashboardLogsPage() {

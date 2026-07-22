@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Palette } from 'lucide-react';
 
 // Toggle switch matching the exact screenshot design
-const MainToggle = ({ enabled, onChange }) => (
+const MainToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -22,7 +22,7 @@ const MainToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const SubToggle = ({ enabled, onChange }) => (
+const SubToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-11 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -39,7 +39,7 @@ const SubToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const CommandRow = ({ name, description, defaultEnabled = true }) => {
+const CommandRow = ({ name, description, defaultEnabled = true }: any) => {
     const [enabled, setEnabled] = useState(defaultEnabled);
 
     return (
@@ -58,7 +58,7 @@ const CommandRow = ({ name, description, defaultEnabled = true }) => {
     );
 };
 
-const ColorSetCard = ({ title, count, colors, index }) => (
+const ColorSetCard = ({title, count, colors, index }: any) => (
     <div className="bg-[#242529] hover:bg-[#2a2b2f] border border-white/5 rounded-xl p-5 cursor-pointer transition-colors flex flex-col items-end justify-between h-32">
         <div className="text-right">
             <h4 className="text-white font-bold text-md">{title}</h4>
@@ -69,7 +69,7 @@ const ColorSetCard = ({ title, count, colors, index }) => (
                 {index}
             </span>
             <div className="flex -space-x-2 space-x-reverse">
-                {colors.map((color, i) => (
+                {colors.map((color: any, i: number) => (
                     <div 
                         key={i} 
                         className="w-5 h-5 rounded-full border-2 border-[#242529]"

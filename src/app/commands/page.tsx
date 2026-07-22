@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Settings } from 'lucide-react';
 import clsx from 'clsx';
 
-const ToggleSwitch = ({ enabled, onChange }) => (
+const ToggleSwitch = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-11 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -21,7 +21,7 @@ const ToggleSwitch = ({ enabled, onChange }) => (
     </div>
 );
 
-const CommandRow = ({ name, description, defaultEnabled = true }) => {
+const CommandRow = ({ name, description, defaultEnabled = true }: any) => {
     const [enabled, setEnabled] = useState(defaultEnabled);
 
     return (

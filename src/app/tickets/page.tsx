@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquare, Plus, Settings2, Shield, Users, Save, Loader2, Trash2, Hash } from 'lucide-react';
 import clsx from 'clsx';
 
-const SettingCard = ({ title, description, children }) => (
+const SettingCard = ({title, description, children }: any) => (
     <div className="glass-panel p-6 hover:border-white/10 transition-colors h-full flex flex-col">
         <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
         <p className="text-gray-400 text-sm mb-4">{description}</p>

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { MoreVertical, Star } from 'lucide-react';
 
 // Toggle switch matching the exact screenshot design
-const MainToggle = ({ enabled, onChange }) => (
+const MainToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -22,7 +22,7 @@ const MainToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const StarboardRow = ({ title, channel }) => (
+const StarboardRow = ({title, channel }: any) => (
     <div className="bg-[#242529] rounded-xl p-4 flex items-center justify-between hover:bg-[#2a2b2f] transition-colors border border-transparent hover:border-white/5">
         <div className="flex items-center gap-3">
             <button className="text-gray-400 hover:text-white p-1 transition-colors">

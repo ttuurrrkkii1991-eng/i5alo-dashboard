@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Shield } from 'lucide-react';
 
-const MainToggle = ({ enabled, onChange }) => (
+const MainToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -21,7 +21,7 @@ const MainToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const SubToggle = ({ enabled, onChange }) => (
+const SubToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-11 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
@@ -38,7 +38,7 @@ const SubToggle = ({ enabled, onChange }) => (
     </div>
 );
 
-const CommandRow = ({ name, description, defaultEnabled = true }) => {
+const CommandRow = ({ name, description, defaultEnabled = true }: any) => {
     const [enabled, setEnabled] = useState(defaultEnabled);
 
     return (

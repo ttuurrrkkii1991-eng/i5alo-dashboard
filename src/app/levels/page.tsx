@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Star, MessageSquareText, Image as ImageIcon, Save, Zap } from 'lucide-react';
 import clsx from 'clsx';
 
-const SettingCard = ({ icon: Icon, title, description, children }) => (
+const SettingCard = ({ icon: Icon, title, description, children }: any) => (
     <div className="glass-panel p-6 hover:border-white/10 transition-colors">
         <div className="flex items-start gap-4 mb-6">
             <div className="w-12 h-12 rounded-xl bg-white/5 text-gray-400 flex items-center justify-center shrink-0">
@@ -20,7 +20,7 @@ const SettingCard = ({ icon: Icon, title, description, children }) => (
 );
 
 // Toggle switch matching the exact screenshot design
-const MainToggle = ({ enabled, onChange }) => (
+const MainToggle = ({enabled, onChange }: any) => (
     <div 
         className={clsx(
             "w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out shrink-0",
