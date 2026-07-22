@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { Palette } from 'lucide-react';
 
@@ -82,7 +82,46 @@ const ColorSetCard = ({title, count, colors, index }: any) => (
 );
 
 export default function ColorsPage() {
-    const [globalEnabled, setGlobalEnabled] = useState(true);
+    const [guildId, setGuildId] = useState<string | null>(null);
+    const [globalEnabled, setGlobalEnabled] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/discord/data')
+            .then(res => res.json())
+            .then(data => {
+                if (data.guild) {
+                    setGuildId(data.guild.id);
+                }
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!guildId) return;
+        setLoading(true);
+        fetch(`/api/features?guildId=${guildId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.features) {
+                    setGlobalEnabled(data.features['colors'] ?? false);
+                }
+            })
+            .finally(() => setLoading(false));
+    }, [guildId]);
+
+    const handleToggle = async (enabled: boolean) => {
+        setGlobalEnabled(enabled);
+        if (!guildId) return;
+        try {
+            await fetch('/api/features', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ guildId, featureId: 'colors', enabled })
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <div className="max-w-5xl mx-auto pt-6 space-y-8">
