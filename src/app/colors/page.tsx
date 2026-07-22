@@ -85,6 +85,7 @@ export default function ColorsPage() {
     const [guildId, setGuildId] = useState<string | null>(null);
     const [globalEnabled, setGlobalEnabled] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [featuresData, setFeaturesData] = useState<any>({});
 
     useEffect(() => {
         fetch('/api/discord/data')
@@ -104,6 +105,7 @@ export default function ColorsPage() {
             .then(data => {
                 if (data.features) {
                     setGlobalEnabled(data.features['colors'] ?? false);
+                    setFeaturesData(data.features);
                 }
             })
             .finally(() => setLoading(false));
@@ -165,8 +167,8 @@ export default function ColorsPage() {
 
                     {/* Commands */}
                     <div>
-                        <CommandRow name="color" description="لتغيير لونك بالسيرفر." />
-                        <CommandRow name="colors" description="يسرد لك كل الألوان المتاحة." />
+                        <CommandRow name="color" description="لتغيير لونك بالسيرفر." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow name="colors" description="يسرد لك كل الألوان المتاحة." guildId={guildId} initialFeatures={featuresData} />
                     </div>
 
                     {/* Color Sets */}
