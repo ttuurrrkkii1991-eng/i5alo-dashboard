@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongoose';
 import Transcript from '@/lib/models/Transcript';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
     await dbConnect();
     
     try {
-        const transcript = await Transcript.findById(params.id);
+        const { id } = await context.params;
+        const transcript = await Transcript.findById(id);
         if (!transcript) {
             return new NextResponse('Transcript not found', { status: 404 });
         }
