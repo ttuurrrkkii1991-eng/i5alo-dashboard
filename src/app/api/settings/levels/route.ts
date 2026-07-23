@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         const settings = await LevelSettings.findOneAndUpdate(
             { guildId },
             { enabled, textPoints, imagePoints, cooldown },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
 
         await logDashboardAction({

@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         const settings = await TempChannelsSettings.findOneAndUpdate(
             { guildId },
             updateData,
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
 
         await logDashboardAction({
