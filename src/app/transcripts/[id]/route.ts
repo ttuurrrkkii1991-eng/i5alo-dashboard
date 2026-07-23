@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import dbConnect from '@/lib/mongoose';
 import Transcript from '@/lib/models/Transcript';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
