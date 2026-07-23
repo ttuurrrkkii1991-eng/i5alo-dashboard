@@ -25,6 +25,7 @@ export default function TicketsPage() {
     // Settings state
     const [selectedChannel, setSelectedChannel] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedLogChannel, setSelectedLogChannel] = useState("");
     
     // Ticket Types state
     const [ticketTypes, setTicketTypes] = useState<any[]>([
@@ -54,6 +55,7 @@ export default function TicketsPage() {
                 if (data.success && data.settings) {
                     if (data.settings.channelId) setSelectedChannel(data.settings.channelId);
                     if (data.settings.categoryId) setSelectedCategory(data.settings.categoryId);
+                    if (data.settings.logChannelId) setSelectedLogChannel(data.settings.logChannelId);
                     if (data.settings.ticketTypes && data.settings.ticketTypes.length > 0) {
                         setTicketTypes(data.settings.ticketTypes);
                     }
@@ -77,6 +79,7 @@ export default function TicketsPage() {
                     guildId,
                     channelId: selectedChannel,
                     categoryId: selectedCategory,
+                    logChannelId: selectedLogChannel,
                     ticketTypes
                 })
             });
@@ -136,12 +139,12 @@ export default function TicketsPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 {/* 1. Send Panel Location */}
                 <SettingCard 
                     title="روم إرسال البانل" 
-                    description="الروم الذي ستظهر فيه رسالة البوت للأعضاء لفتح التذاكر."
+                    description="الروم الذي ستظهر فيه رسالة البوت."
                 >
                     <div className="flex items-center gap-3 bg-black/20 border border-white/10 rounded-lg p-3">
                         <Hash className="w-5 h-5 text-gray-400" />
@@ -163,7 +166,7 @@ export default function TicketsPage() {
                 {/* 2. Create Tickets Category */}
                 <SettingCard 
                     title="كاتجوري التذاكر" 
-                    description="الفئة (Category) التي سيتم إنشاء الرومات الخاصة بالتذاكر بداخلها."
+                    description="الفئة (Category) الخاصة بالتذاكر."
                 >
                     <select 
                         className="w-full bg-[#1e1f22] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-[#f1c40f]/50 transition-colors"
@@ -177,6 +180,28 @@ export default function TicketsPage() {
                             <option key={c.id} value={c.id} className="bg-[#1e1f22] text-white">{c.name}</option>
                         ))}
                     </select>
+                </SettingCard>
+
+                {/* 3. Log Channel */}
+                <SettingCard 
+                    title="روم حفظ اللوق" 
+                    description="الروم الذي سيتم إرسال سجلات التذاكر (Transcripts) إليه عند إغلاقها."
+                >
+                    <div className="flex items-center gap-3 bg-black/20 border border-white/10 rounded-lg p-3">
+                        <Hash className="w-5 h-5 text-gray-400" />
+                        <select 
+                            className="w-full bg-[#1e1f22] text-white outline-none cursor-pointer p-2 rounded"
+                            disabled={loading}
+                            value={selectedLogChannel}
+                            onChange={(e) => setSelectedLogChannel(e.target.value)}
+                            dir="rtl"
+                        >
+                            <option value="" className="bg-[#1e1f22] text-white">{loading ? "جاري التحميل..." : "بدون روم لوق"}</option>
+                            {textChannels.map((c: any) => (
+                                <option key={c.id} value={c.id} className="bg-[#1e1f22] text-white">{c.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </SettingCard>
             </div>
 
