@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
+import connectDB from '@/lib/mongoose';
 import LevelSettings from '@/lib/models/LevelSettings';
+import { logDashboardAction } from '@/lib/logger';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-async function connectDB() {
-    if (mongoose.connection.readyState >= 1) return;
-    await mongoose.connect(MONGODB_URI as string);
-}
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -18,6 +15,9 @@ export async function GET(request: Request) {
     }
 
     try {
+        const session = await getServerSession(authOptions);
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
         await connectDB();
         let settings = await LevelSettings.findOne({ guildId });
         
@@ -31,9 +31,7 @@ export async function GET(request: Request) {
     }
 }
 
-import { logDashboardAction } from '@/lib/logger';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 
 export async function POST(request: Request) {
     try {

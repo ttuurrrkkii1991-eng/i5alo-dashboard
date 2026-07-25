@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import TicketSettings from '@/lib/models/TicketSettings';
+import { logDashboardAction } from '@/lib/logger';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req: Request) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
         await connectDB();
         const { searchParams } = new URL(req.url);
         const guildId = searchParams.get('guildId');
@@ -27,9 +33,7 @@ export async function GET(req: Request) {
     }
 }
 
-import { logDashboardAction } from '@/lib/logger';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 
 export async function POST(req: Request) {
     try {

@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import GuildStats from '@/lib/models/GuildStats'; // Need to create this alias in web/src/lib/models
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req: Request) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
         await connectDB();
         
         const { searchParams } = new URL(req.url);
