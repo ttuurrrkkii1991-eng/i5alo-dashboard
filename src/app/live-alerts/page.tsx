@@ -78,7 +78,7 @@ export default function LiveAlertsPage() {
         if (!guildId) return;
         setSaving(true);
         try {
-            await fetch('/api/settings/live-alerts', {
+            const res = await fetch('/api/settings/live-alerts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -92,8 +92,13 @@ export default function LiveAlertsPage() {
                     }))
                 })
             });
-            alert('تم حفظ الإعدادات بنجاح! 🚀');
-        } catch (error) {
+            const data = await res.json();
+            if (data.success) {
+                alert('تم حفظ الإعدادات بنجاح! 🚀');
+            } else {
+                alert('حدث خطأ: ' + data.error);
+            }
+        } catch (error: any) {
             console.error(error);
             alert('حدث خطأ أثناء الحفظ.');
         }

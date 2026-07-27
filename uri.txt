@@ -1,0 +1,1 @@
+mongodb+srv://admin:B1jpH4JtTuvB9IQt@cluster0.np4ejd6.mongodb.net/i5alo?retryWrites=true&w=majority&appName=Cluster0
