@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { guildId, enabled, textPoints, imagePoints, cooldown } = body;
+        const { guildId, enabled, textPoints, imagePoints, voicePoints, cooldown } = body;
 
         if (!guildId) {
             return NextResponse.json({ error: 'Guild ID is required' }, { status: 400 });
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         await connectDB();
         const settings = await LevelSettings.findOneAndUpdate(
             { guildId },
-            { enabled, textPoints, imagePoints, cooldown },
+            { enabled, textPoints, imagePoints, voicePoints, cooldown },
             { returnDocument: 'after', upsert: true }
         );
 

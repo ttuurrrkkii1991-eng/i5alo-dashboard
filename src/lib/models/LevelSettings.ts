@@ -5,6 +5,7 @@ const LevelSettingsSchema = new mongoose.Schema({
     enabled: { type: Boolean, default: true },
     textPoints: { type: Number, default: 15 },
     imagePoints: { type: Number, default: 25 },
+    voicePoints: { type: Number, default: 10 },
     cooldown: { type: Number, default: 15 },
 });
 

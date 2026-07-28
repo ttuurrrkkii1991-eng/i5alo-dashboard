@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Star, MessageSquareText, Image as ImageIcon, Save, Zap } from 'lucide-react';
+import { Star, MessageSquareText, Image as ImageIcon, Save, Zap, Mic } from 'lucide-react';
 import clsx from 'clsx';
 
 const SettingCard = ({ icon: Icon, title, description, children }: any) => (
@@ -41,6 +41,7 @@ export default function LevelsPage() {
     const [globalEnabled, setGlobalEnabled] = useState(true);
     const [textPoints, setTextPoints] = useState(15);
     const [imagePoints, setImagePoints] = useState(25);
+    const [voicePoints, setVoicePoints] = useState(10);
     const [cooldown, setCooldown] = useState(15);
     const [guildId, setGuildId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -62,6 +63,7 @@ export default function LevelsPage() {
                     setGlobalEnabled(settings.enabled ?? true);
                     setTextPoints(settings.textPoints ?? 15);
                     setImagePoints(settings.imagePoints ?? 25);
+                    setVoicePoints(settings.voicePoints ?? 10);
                     setCooldown(settings.cooldown ?? 15);
                 }
                 setLoading(false);
@@ -81,6 +83,7 @@ export default function LevelsPage() {
                     enabled: globalEnabled,
                     textPoints,
                     imagePoints,
+                    voicePoints,
                     cooldown
                 })
             });
@@ -150,6 +153,28 @@ export default function LevelsPage() {
                             </div>
                         </div>
                         <p className="text-xs text-gray-500 mt-2 text-right">يُفضل وضع نقاط أعلى للصور لتشجيع التفاعل المرئي.</p>
+                    </SettingCard>
+
+                    {/* Voice Points Setting */}
+                    <SettingCard 
+                        icon={Mic}
+                        title="نقاط الرومات الصوتية"
+                        description="حدد عدد النقاط (XP) التي يحصل عليها العضو عن كل دقيقة يقضيها في الروم الصوتي."
+                    >
+                        <div className="flex items-center gap-4 bg-black/20 p-4 rounded-lg border border-white/10">
+                            <input 
+                                type="range" 
+                                min="1" 
+                                max="100" 
+                                value={voicePoints}
+                                onChange={(e) => setVoicePoints(Number(e.target.value))}
+                                className="w-full accent-[#3498db]" 
+                            />
+                            <div className="bg-[#3498db]/20 border border-[#3498db]/30 text-[#3498db] px-4 py-2 rounded-lg font-bold min-w-[80px] text-center">
+                                {voicePoints} XP
+                            </div>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2 text-right">يتم احتساب النقاط وتوزيعها تلقائياً للمتواجدين بالصوت.</p>
                     </SettingCard>
 
                     {/* Rate Limit Setting */}
