@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { 
     Settings, MessageSquare, Diamond, Eye, Shield, Link as LinkIcon, 
     Star, Users, Clock, Palette, CheckCircle2, Crown, Bot,
-    ChevronDown, ShieldAlert, FileClock, Wrench, FileText, Radio
+    ChevronDown, ShieldAlert, FileClock, Wrench, FileText, Radio, PlaySquare
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -166,6 +166,7 @@ export default function Sidebar() {
                     <SidebarItem href="/tickets" icon={MessageSquare} title="التذاكر" featureId="tickets" enabled={features['tickets']} onToggle={handleToggle} />
                     <SidebarItem href="/applications" icon={FileClock} title="التقديمات (Forms)" featureId="applications" enabled={features['applications']} onToggle={handleToggle} />
                     <SidebarItem href="/live-alerts" icon={Radio} title="إشعارات البث" featureId="live-alerts" enabled={features['live-alerts']} onToggle={handleToggle} />
+                    <SidebarItem href="/youtube-bot" icon={PlaySquare} title="بوت اليوتيوب" featureId="youtube-bot" enabled={features['youtube-bot']} onToggle={handleToggle} />
                 </SidebarSection>
 
                 <SidebarSection title="الإشراف">
