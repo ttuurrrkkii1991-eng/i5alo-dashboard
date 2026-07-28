@@ -38,7 +38,7 @@ const SubToggle = ({enabled, onChange }: any) => (
     </div>
 );
 
-const CommandRow = ({ name, description, defaultEnabled = true }: any) => {
+const CommandRow = ({ id, name, description, defaultEnabled = true, guildId, initialFeatures }: any) => {
     const [enabled, setEnabled] = useState(defaultEnabled);
 
     return (
@@ -134,29 +134,29 @@ export default function ModerationPage() {
 
                     {/* Commands List */}
                     <div className="mt-8">
-                        <CommandRow name="setnick" description="تغيير لقب العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="ban" description="حظر العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="unban" description="إزالة الحظر عن عضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="kick" description="طرد العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="vkick" description="طرد العضو من الروم الصوتي." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="mute text" description="منع العضو من الكتابة في الرومات الكتابية." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="unmute text" description="إلغاء منع كتابي من عضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="mute voice" description="منع عضو من التحدث في الرومات الصوتية." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="unmute voice" description="فك الكتم الصوتي من العضو" guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="timeout" description="أعطاء وقت مستقطع للعضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="untimeout" description="إزالة الوقت المستقطع من المستخدم." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="clear" description="تنظيف رسائل الروم." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="move" description="نقل عضو إلى روم صوتي." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="role" description="إضافة / إزالة رولات من المستخدم." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="points" description="النقاط التي يمكن أن تُعطى من قبل المشرفين." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="warn" description="تحذير العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="warn_remove" description="إزالة انذارات السيرفر او العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="warnings" description="الحصول على قائمة إنذارات السيرفر او العضو." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="lock" description="يقوم بتعطيل خاصية إرسال الرسائل من الجميع في روم معين." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="unlock" description="للسماح للجميع بإرسال رسائل في روم محدد." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="setcolor" description="تغيير لون رول عن طريق الـHex Code." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="slowmode" description="تفعيل او تعطيل سلو مود من الروم." guildId={guildId} initialFeatures={featuresData} />
-                        <CommandRow name="reset" description="اعادة تعيين النقاط الكتابيه/الصوتية/الانفايت من جميع الاعضاء او عضو معين." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="setnick" name="تغيير_اللقب" description="تغيير لقب العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="ban" name="باند" description="حظر العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="unban" name="فك_باند" description="إزالة الحظر عن عضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="kick" name="طرد" description="طرد العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="vkick" name="طرد_صوتي" description="طرد العضو من الروم الصوتي." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="mute_text" name="ميوت" description="منع العضو من الكتابة في الرومات الكتابية." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="unmute_text" name="فك_ميوت" description="إلغاء منع كتابي من عضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="mute_voice" name="ميوت_صوتي" description="منع عضو من التحدث في الرومات الصوتية." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="unmute_voice" name="فك_ميوت_صوتي" description="فك الكتم الصوتي من العضو" guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="timeout" name="تايم_اوت" description="أعطاء وقت مستقطع للعضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="untimeout" name="فك_تايم_اوت" description="إزالة الوقت المستقطع من المستخدم." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="clear" name="مسح" description="تنظيف رسائل الروم." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="move" name="نقل" description="نقل عضو إلى روم صوتي." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="role" name="رول" description="إضافة / إزالة رولات من المستخدم." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="points" name="نقاط" description="النقاط التي يمكن أن تُعطى من قبل المشرفين." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="warn" name="انذار" description="تحذير العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="warn_remove" name="ازالة_انذار" description="إزالة انذارات السيرفر او العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="warnings" name="انذارات" description="الحصول على قائمة إنذارات السيرفر او العضو." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="lock" name="قفل" description="يقوم بتعطيل خاصية إرسال الرسائل من الجميع في روم معين." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="unlock" name="فك_قفل" description="للسماح للجميع بإرسال رسائل في روم محدد." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="setcolor" name="لون" description="تغيير لون رول عن طريق الـHex Code." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="slowmode" name="بطيء" description="تفعيل او تعطيل سلو مود من الروم." guildId={guildId} initialFeatures={featuresData} />
+                        <CommandRow id="reset" name="تصفير" description="اعادة تعيين النقاط الكتابيه/الصوتية/الانفايت من جميع الاعضاء او عضو معين." guildId={guildId} initialFeatures={featuresData} />
                     </div>
                 </div>
             )}

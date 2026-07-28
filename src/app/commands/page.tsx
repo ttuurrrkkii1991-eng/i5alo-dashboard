@@ -21,8 +21,8 @@ const ToggleSwitch = ({enabled, onChange }: any) => (
     </div>
 );
 
-const CommandRow = ({ name, description, guildId, initialFeatures }: any) => {
-    const featureKey = `cmd_${name.replace(/ /g, '_')}`;
+const CommandRow = ({ id, name, description, guildId, initialFeatures }: any) => {
+    const featureKey = `cmd_${id}`;
     const [enabled, setEnabled] = useState(initialFeatures[featureKey] ?? true);
 
     const handleToggle = async (newVal: boolean) => {
@@ -110,20 +110,20 @@ export default function GeneralCommandsPage() {
 
             {globalEnabled && (
                 <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <CommandRow name="moveme" description="ينقلك إلى روم صوتي." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="profile" description="عرض بطاقة التعريف الشخصية العامة المخصصة لك أو لشخص آخر." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="user" description="يعرض معلومات، مثل تاريخ دخول السيرفر وتاريخ التسجيل في الديسكورد عنك او عن مستخدم آخر." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="avatar" description="الحصول على الصورة الرمزية للمستخدمين." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="server" description="يظهر معلومات حول السيرفر." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="daily" description="احصل على رابط المكافأة اليومية ومعرفة متى يمكنك الحصول عليها مرة اخرى." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="vote" description="احصل على رابط التصويت ومعرفة متى يمكنك التصويت للبوت مرة اخرى" guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="rep" description="منح شخص نقطة سمعة. يمكن استخدامها مرة واحدة فقط كل 24 ساعة." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="credits" description="يظهر رصيدك أو رصيد شخص ما." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="roll" description="رمي حجر نرد." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="short" description="اختصار رابط." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="ping" description="اختبار وقت استجابة البوت." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="roles" description="احصل على قائمة برولات السيرفر وعدد الأعضاء." guildId={guildId} initialFeatures={featuresData} />
-                    <CommandRow name="points" description="النقاط التي يمكن أن تُعطى من قبل المشرفين." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="moveme" name="سحب" description="ينقلك إلى روم صوتي." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="profile" name="ملف" description="عرض بطاقة التعريف الشخصية العامة المخصصة لك أو لشخص آخر." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="user" name="يوزر" description="يعرض معلومات، مثل تاريخ دخول السيرفر وتاريخ التسجيل في الديسكورد عنك او عن مستخدم آخر." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="avatar" name="افتار" description="الحصول على الصورة الرمزية للمستخدمين." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="server" name="سيرفر" description="يظهر معلومات حول السيرفر." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="daily" name="راتب" description="احصل على رابط المكافأة اليومية ومعرفة متى يمكنك الحصول عليها مرة اخرى." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="vote" name="تصويت" description="احصل على رابط التصويت ومعرفة متى يمكنك التصويت للبوت مرة اخرى" guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="rep" name="سمعة" description="منح شخص نقطة سمعة. يمكن استخدامها مرة واحدة فقط كل 24 ساعة." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="credits" name="رصيد" description="يظهر رصيدك أو رصيد شخص ما." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="roll" name="نرد" description="رمي حجر نرد." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="short" name="اختصار" description="اختصار رابط." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="ping" name="بنق" description="اختبار وقت استجابة البوت." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="roles" name="رتب" description="احصل على قائمة برولات السيرفر وعدد الأعضاء." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="points" name="نقاط" description="النقاط التي يمكن أن تُعطى من قبل المشرفين." guildId={guildId} initialFeatures={featuresData} />
                 </div>
             )}
         </div>
