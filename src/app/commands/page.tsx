@@ -124,6 +124,8 @@ export default function GeneralCommandsPage() {
                     <CommandRow id="ping" name="بنق" description="اختبار وقت استجابة البوت." guildId={guildId} initialFeatures={featuresData} />
                     <CommandRow id="roles" name="رتب" description="احصل على قائمة برولات السيرفر وعدد الأعضاء." guildId={guildId} initialFeatures={featuresData} />
                     <CommandRow id="points" name="نقاط" description="النقاط التي يمكن أن تُعطى من قبل المشرفين." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="rank" name="رانك" description="عرض مستواك ونقاطك الحالية في السيرفر." guildId={guildId} initialFeatures={featuresData} />
+                    <CommandRow id="top" name="توب" description="عرض قائمة المتصدرين في السيرفر." guildId={guildId} initialFeatures={featuresData} />
                 </div>
             )}
         </div>
