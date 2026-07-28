@@ -36,7 +36,7 @@ export default function YoutubeBotPage() {
             .then(data => {
                 if (data.guild) {
                     setGuildId(data.guild.id);
-                    setTextChannels(data.channels?.text || []);
+                    setTextChannels(data.textChannels || []);
                 }
             });
     }, []);
