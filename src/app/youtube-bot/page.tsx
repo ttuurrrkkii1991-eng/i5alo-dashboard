@@ -3,8 +3,23 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Loader2, PlaySquare, Hash } from 'lucide-react';
 import clsx from 'clsx';
-import MainToggle from '@/components/MainToggle';
-import toast, { Toaster } from 'react-hot-toast';
+
+const MainToggle = ({ enabled, onChange }: any) => (
+    <button
+        onClick={() => onChange(!enabled)}
+        className={clsx(
+            "relative w-16 h-8 rounded-full transition-colors duration-300 shadow-inner flex items-center px-1",
+            enabled ? "bg-[#00F2EA]" : "bg-gray-700"
+        )}
+    >
+        <div 
+            className={clsx(
+                "w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-300",
+                enabled ? "translate-x-[-32px]" : "translate-x-0"
+            )}
+        />
+    </button>
+);
 
 export default function YoutubeBotPage() {
     const [guildId, setGuildId] = useState<string | null>(null);
@@ -44,7 +59,7 @@ export default function YoutubeBotPage() {
         if (!guildId) return;
         setSaving(true);
         try {
-            const res = await fetch('/api/features/youtube-bot', {
+            await fetch('/api/features/youtube-bot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -53,15 +68,8 @@ export default function YoutubeBotPage() {
                     commandChannelId
                 })
             });
-
-            if (res.ok) {
-                toast.success('تم حفظ الإعدادات بنجاح', { style: { background: '#333', color: '#fff', direction: 'rtl' } });
-            } else {
-                toast.error('حدث خطأ أثناء الحفظ', { style: { background: '#333', color: '#fff', direction: 'rtl' } });
-            }
         } catch (error) {
             console.error(error);
-            toast.error('حدث خطأ أثناء الحفظ', { style: { background: '#333', color: '#fff', direction: 'rtl' } });
         } finally {
             setSaving(false);
         }
@@ -77,7 +85,6 @@ export default function YoutubeBotPage() {
 
     return (
         <div className="max-w-4xl mx-auto pt-6 space-y-6 pb-20">
-            <Toaster position="bottom-center" />
             
             {/* Header */}
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
