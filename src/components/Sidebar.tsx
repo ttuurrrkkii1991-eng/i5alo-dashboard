@@ -148,7 +148,7 @@ export default function Sidebar() {
                     <SidebarItem href="/" icon={Eye} title="نظرة عامة" />
                     <SidebarItem href="/settings" icon={Settings} title="إعدادات السيرفر" />
                     <SidebarItem href="/embeds" icon={MessageSquare} title="رسائل الإيمبد" />
-                    <SidebarItem href="#" icon={Diamond} title="اشتراكات البريميوم" />
+
                 </SidebarSection>
 
                 <SidebarSection title="قائمة الخصائص">
