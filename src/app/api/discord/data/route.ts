@@ -20,18 +20,18 @@ export async function GET(request: Request) {
     }
 
     try {
-        // Fetch User's Guilds using their OAuth access token
-        const userGuildsRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-            headers: { Authorization: `Bearer ${session.accessToken}` },
-            cache: 'no-store'
-        });
+        // Fetch User's Guilds and Bot's Guilds in parallel
+        const [userGuildsRes, botGuildsRes] = await Promise.all([
+            fetch(`${DISCORD_API}/users/@me/guilds`, {
+                headers: { Authorization: `Bearer ${session.accessToken}` },
+                cache: 'no-store'
+            }),
+            fetch(`${DISCORD_API}/users/@me/guilds`, {
+                headers: { Authorization: `Bot ${BOT_TOKEN}` },
+                cache: 'no-store'
+            })
+        ]);
         const userGuilds = await userGuildsRes.json();
-
-        // Fetch Bot's Guilds
-        const botGuildsRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` },
-            cache: 'no-store'
-        });
         const botGuilds = await botGuildsRes.json();
 
         if (!Array.isArray(userGuilds) || !Array.isArray(botGuilds)) {
@@ -64,24 +64,30 @@ export async function GET(request: Request) {
         }
         const guildId = selectedGuild.id;
 
-        // Fetch full guild object (to get member count)
-        const fullGuildRes = await fetch(`${DISCORD_API}/guilds/${guildId}?with_counts=true`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` },
-            cache: 'no-store'
-        });
+        // Fetch full guild object, roles, and channels in parallel
+        const [fullGuildRes, rolesRes, channelsRes] = await Promise.all([
+            fetch(`${DISCORD_API}/guilds/${guildId}?with_counts=true`, {
+                headers: { Authorization: `Bot ${BOT_TOKEN}` },
+                cache: 'no-store'
+            }),
+            fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
+                headers: { Authorization: `Bot ${BOT_TOKEN}` },
+                cache: 'no-store'
+            }),
+            fetch(`${DISCORD_API}/guilds/${guildId}/channels`, {
+                headers: { Authorization: `Bot ${BOT_TOKEN}` },
+                cache: 'no-store'
+            })
+        ]);
+
         const fullGuild = await fullGuildRes.json();
-        
+        const roles = await rolesRes.json();
+        const channels = await channelsRes.json();
+
         // Merge full guild data into selectedGuild
         if (fullGuild.approximate_member_count) {
             selectedGuild.memberCount = fullGuild.approximate_member_count;
         }
-
-        // 2. Fetch roles for this guild
-        const rolesRes = await fetch(`${DISCORD_API}/guilds/${guildId}/roles`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` },
-            cache: 'no-store'
-        });
-        const roles = await rolesRes.json();
 
         // Filter out @everyone role and sort by position (highest first)
         const formattedRoles = roles
@@ -92,13 +98,6 @@ export async function GET(request: Request) {
                 name: r.name,
                 color: r.color === 0 ? '#99aab5' : `#${r.color.toString(16).padStart(6, '0')}`
             }));
-
-        // 3. Fetch channels for this guild
-        const channelsRes = await fetch(`${DISCORD_API}/guilds/${guildId}/channels`, {
-            headers: { Authorization: `Bot ${BOT_TOKEN}` },
-            cache: 'no-store'
-        });
-        const channels = await channelsRes.json();
 
         // Filter for category channels (type 4), text channels (type 0), and voice channels (type 2)
         const categories = channels
